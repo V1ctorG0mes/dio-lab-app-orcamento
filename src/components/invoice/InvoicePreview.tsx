@@ -12,7 +12,7 @@ import {
 function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "OF";
-  return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
+  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
 function Line({ children }: { children: React.ReactNode }) {
