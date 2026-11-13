@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Quote math, formatting and sample data live in `src/lib/invoice.ts` (pure, tested in `invoice.test.ts`); components only call it — keeps totals consistent between editor and preview.
+- The A4 preview is rendered at real size (210mm) and scaled on screen; print CSS (`.no-print`, `.print-root`, `.print-scaler` in styles.css) resets scale so `window.print()` outputs only the sheet.

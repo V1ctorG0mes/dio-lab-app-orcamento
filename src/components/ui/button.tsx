@@ -16,6 +16,12 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        cta: "bg-primary text-primary-foreground shadow-cta hover:bg-primary/92 active:translate-y-px",
+        toolbar:
+          "text-foreground/80 hover:bg-secondary hover:text-foreground border border-transparent hover:border-border",
+        dangerSoft:
+          "text-muted-foreground hover:bg-destructive/10 hover:text-destructive",
+        dangerConfirm: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
       },
       size: {
         default: "h-9 px-4 py-2",
