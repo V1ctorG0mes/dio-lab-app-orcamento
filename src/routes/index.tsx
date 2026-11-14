@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Eye, FilePlus2, PencilLine, Printer, ReceiptText, Sparkles, CloudCheck } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  CloudCheck,
+  Eye,
+  FilePlus2,
+  FolderOpen,
+  PencilLine,
+  Printer,
+  ReceiptText,
+  Save,
+  Sparkles,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,8 +26,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { InvoiceEditor } from "@/components/invoice/InvoiceEditor";
 import { InvoicePreview } from "@/components/invoice/InvoicePreview";
+import { QuotesDrawer } from "@/components/invoice/QuotesDrawer";
+import { WhatsAppDialog } from "@/components/invoice/WhatsAppDialog";
+import { WhatsAppIcon } from "@/components/invoice/WhatsAppIcon";
 import { useInvoice } from "@/hooks/use-invoice";
-import { makeEmptyInvoice, makeSampleInvoice } from "@/lib/invoice";
+import { useSavedQuotes } from "@/hooks/use-saved-quotes";
+import { makeEmptyInvoice, makeSampleInvoice, nextQuoteNumber, type SavedQuote } from "@/lib/invoice";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -43,7 +57,41 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { invoice, setInvoice, savedAt, saveNow } = useInvoice();
+  const { quotes, loaded: quotesLoaded, save, remove, duplicate } = useSavedQuotes();
   const [view, setView] = useState<"edit" | "preview">("edit");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [waOpen, setWaOpen] = useState(false);
+
+  const savedEntry = quotes.find((q) => q.invoice.id === invoice.id);
+  const dirty = useMemo(
+    () => !savedEntry || JSON.stringify(savedEntry.invoice) !== JSON.stringify(invoice),
+    [savedEntry, invoice],
+  );
+
+  const handleSave = () => {
+    saveNow();
+    const res = save(invoice);
+    if (!res) return;
+    toast.success(res.created ? "Orçamento salvo" : "Orçamento atualizado", {
+      description: `${invoice.meta.number} está em “Meus orçamentos”.`,
+    });
+  };
+
+  const openQuote = (q: SavedQuote) => {
+    setInvoice(structuredClone(q.invoice));
+    setDrawerOpen(false);
+    setView("edit");
+    toast.success(`Orçamento ${q.invoice.meta.number} aberto`);
+  };
+
+  const duplicateSaved = (id: string) => {
+    const copy = duplicate(id);
+    if (copy) toast.success("Cópia criada", { description: `${copy.meta.number} foi adicionado à lista.` });
+  };
+
+  const deleteSaved = (id: string) => {
+    if (remove(id)) toast("Orçamento excluído da lista");
+  };
 
   const fillExample = () => {
     setInvoice(makeSampleInvoice());
@@ -51,7 +99,8 @@ function Index() {
   };
 
   const clearAll = () => {
-    setInvoice(makeEmptyInvoice());
+    const used = [...quotes.map((q) => q.invoice.meta.number), invoice.meta.number];
+    setInvoice(makeEmptyInvoice(new Date(), nextQuoteNumber(used)));
     toast.success("Novo orçamento iniciado", { description: "Os dados anteriores foram apagados." });
   };
 
@@ -73,7 +122,7 @@ function Index() {
             <ReceiptText className="h-[18px] w-[18px]" />
           </span>
           <div className="leading-tight">
-            <h1 className="font-display text-2xl leading-none tracking-tight">OrçaFácil</h1>
+            <h1 className="sr-only font-display text-2xl leading-none tracking-tight sm:not-sr-only">OrçaFácil</h1>
             <p className="hidden text-[11px] text-muted-foreground sm:block">Orçamentos para freelancers</p>
           </div>
         </div>
@@ -81,30 +130,43 @@ function Index() {
         <button
           type="button"
           onClick={() => saveNow() && toast.success("Alterações salvas neste navegador")}
-          className="ml-2 hidden cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:inline-flex"
-          title="Salvar agora"
+          className="ml-2 hidden cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:inline-flex"
+          title="O rascunho é salvo automaticamente neste navegador"
         >
           <CloudCheck className="h-3.5 w-3.5" />
           {savedAt
-            ? `Salvo às ${savedAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
+            ? `Rascunho salvo às ${savedAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`
             : "Salvamento automático"}
         </button>
 
-        <div className="ml-auto flex items-center gap-1.5">
-          <Button variant="toolbar" size="sm" onClick={fillExample}>
-            <Sparkles /> <span className="hidden sm:inline">Preencher exemplo</span>
+        <div className="ml-auto flex items-center gap-1">
+          <Button
+            variant="toolbar"
+            size="sm"
+            onClick={fillExample}
+            title="Preencher exemplo"
+            aria-label="Preencher exemplo"
+            className="px-2.5 2xl:px-3"
+          >
+            <Sparkles /> <span className="hidden 2xl:inline">Preencher exemplo</span>
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="toolbar" size="sm">
-                <FilePlus2 /> <span className="hidden sm:inline">Limpar / Novo</span>
+              <Button
+                variant="toolbar"
+                size="sm"
+                title="Limpar / Novo"
+                aria-label="Limpar / Novo"
+                className="px-2.5 2xl:px-3"
+              >
+                <FilePlus2 /> <span className="hidden 2xl:inline">Limpar / Novo</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Começar um novo orçamento?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Todos os campos serão apagados. Essa ação não pode ser desfeita.
+                  Todos os campos serão apagados. Orçamentos salvos em “Meus orçamentos” continuam na lista.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -113,9 +175,54 @@ function Index() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button variant="cta" onClick={handlePrint} className="ml-1">
-            <Printer /> <span className="hidden sm:inline">Exportar / Imprimir PDF</span>
-            <span className="sm:hidden">PDF</span>
+
+          <span className="mx-1 hidden h-5 w-px bg-border sm:block" aria-hidden />
+
+          <Button
+            variant="toolbar"
+            size="sm"
+            onClick={() => setDrawerOpen(true)}
+            title="Meus orçamentos"
+            aria-label={`Meus orçamentos (${quotes.length} salvos)`}
+            className="relative px-2.5 lg:px-3"
+          >
+            <FolderOpen /> <span className="hidden lg:inline">Meus orçamentos</span>
+            {quotesLoaded && quotes.length > 0 && (
+              <span className="tabular absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold leading-none text-primary-foreground lg:static lg:h-[18px] lg:min-w-[18px]">
+                {quotes.length}
+              </span>
+            )}
+          </Button>
+          <Button
+            variant="toolbar"
+            size="sm"
+            onClick={handleSave}
+            title={dirty ? "Salvar orçamento (há alterações não salvas)" : "Orçamento salvo"}
+            aria-label="Salvar orçamento"
+            className="relative px-2.5 lg:px-3"
+          >
+            <Save /> <span className="hidden lg:inline xl:hidden">Salvar</span>
+            <span className="hidden xl:inline">Salvar orçamento</span>
+            {quotesLoaded && dirty && (
+              <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-brass" aria-hidden />
+            )}
+          </Button>
+          <Button
+            variant="toolbar"
+            size="sm"
+            onClick={() => setWaOpen(true)}
+            title="Enviar WhatsApp"
+            aria-label="Enviar WhatsApp"
+            className="px-2.5 lg:px-3"
+          >
+            <WhatsAppIcon className="text-whatsapp" />
+            <span className="hidden lg:inline xl:hidden">WhatsApp</span>
+            <span className="hidden xl:inline">Enviar WhatsApp</span>
+          </Button>
+
+          <Button variant="cta" onClick={handlePrint} className="ml-1 px-3 lg:px-4">
+            <Printer /> <span className="hidden lg:inline">Exportar / Imprimir PDF</span>
+            <span className="lg:hidden">PDF</span>
           </Button>
         </div>
       </header>
@@ -166,6 +273,18 @@ function Index() {
           <InvoicePreview invoice={invoice} />
         </section>
       </main>
+
+      <QuotesDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        quotes={quotes}
+        currentId={invoice.id}
+        currentDirty={dirty}
+        onOpenQuote={openQuote}
+        onDuplicate={duplicateSaved}
+        onDelete={deleteSaved}
+      />
+      <WhatsAppDialog open={waOpen} onOpenChange={setWaOpen} invoice={invoice} />
     </div>
   );
 }

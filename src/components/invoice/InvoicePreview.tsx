@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Copy, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
+import { copyText } from "@/lib/clipboard";
+import { buildPixPayload } from "@/lib/pix";
 import {
   formatBRL,
   formatDateBR,
@@ -7,7 +11,67 @@ import {
   itemSubtotal,
   STATUS_LABEL,
   type Invoice,
+  type InvoiceStatus,
 } from "@/lib/invoice";
+
+const STATUS_DOT: Record<InvoiceStatus, string> = {
+  pendente: "bg-status-pending-foreground",
+  aprovado: "bg-status-approved-foreground",
+  recusado: "bg-status-refused-foreground",
+  pago: "bg-status-paid-foreground",
+};
+
+function PixBlock({ invoice, total }: { invoice: Invoice; total: number }) {
+  const key = invoice.issuer.pixKey.trim();
+  const payload = buildPixPayload({
+    key,
+    name: invoice.issuer.name,
+    amount: total,
+    txid: invoice.meta.number,
+  });
+  const copy = async () => {
+    if (await copyText(key)) toast.success("Chave Pix copiada", { description: key });
+    else toast.error("Não foi possível copiar a chave Pix");
+  };
+  return (
+    <div className="mt-3 flex items-center gap-3.5 rounded-md border border-sheet-ink/15 bg-sheet-ink-soft p-2.5">
+      <div className="shrink-0 rounded bg-sheet p-1.5 text-sheet-ink shadow-[0_0_0_1px] shadow-sheet-ink/10">
+        <QRCodeSVG
+          value={payload}
+          size={96}
+          level="M"
+          marginSize={0}
+          bgColor="transparent"
+          fgColor="currentColor"
+          title="QR Code Pix"
+          className="block h-[24mm] w-[24mm]"
+        />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="flex items-center gap-1.5 text-[8.5px] font-semibold uppercase tracking-[0.16em] text-sheet-ink">
+          <QrCode className="h-3 w-3" /> Pague com Pix
+        </p>
+        <p className="mt-0.5 text-[9px] leading-snug text-sheet-muted">
+          Escaneie o código no app do seu banco.
+        </p>
+        <p className="mt-2 text-[7.5px] font-semibold uppercase tracking-wider text-sheet-muted">Chave Pix</p>
+        <p className="font-mono text-[9.5px] leading-snug break-all text-sheet-foreground">{key}</p>
+        {total > 0 && (
+          <p className="tabular mt-1 text-[9.5px] text-sheet-muted">
+            Valor: <span className="font-semibold text-sheet-foreground">{formatBRL(total)}</span>
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={copy}
+          className="no-print mt-1.5 inline-flex cursor-pointer items-center gap-1 rounded border border-sheet-ink/20 bg-sheet px-1.5 py-0.5 text-[8.5px] font-medium text-sheet-ink transition-colors hover:bg-sheet-ink hover:text-sheet-ink-foreground"
+        >
+          <Copy className="h-2.5 w-2.5" /> Copiar chave Pix
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -21,12 +85,12 @@ function Line({ children }: { children: React.ReactNode }) {
 }
 
 export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
-  const { issuer, client, meta, items, discount, payment, notes } = invoice;
+  const { issuer, client, meta, items, discount, payment, notes, style } = invoice;
   const totals = invoiceTotals(invoice);
   const visibleItems = items.filter((i) => i.description.trim() || i.unitPrice > 0);
 
   return (
-    <article className="a4-sheet flex flex-col px-[16mm] pt-[15mm] pb-[13mm] text-[10.5px]">
+    <article data-accent={style.accent} className="a4-sheet flex flex-col px-[16mm] pt-[15mm] pb-[13mm] text-[10.5px]">
       {/* Header */}
       <header className="flex items-start justify-between gap-8">
         <div className="flex items-start gap-4">
@@ -37,7 +101,7 @@ export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
               className="h-14 w-14 shrink-0 rounded-md object-contain"
             />
           ) : (
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-sheet-ink font-display text-2xl text-primary-foreground">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-sheet-ink font-display text-2xl text-sheet-ink-foreground">
               {initials(issuer.name)}
             </div>
           )}
@@ -54,13 +118,17 @@ export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
             Orçamento
           </p>
           <p className="mt-2 font-mono text-[11px] text-sheet-muted">{meta.number || "—"}</p>
-          <Badge variant={meta.status} className="mt-2 rounded-full px-3 text-[9.5px] uppercase tracking-wider">
+          <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-sheet-ink/20 bg-sheet-ink-soft px-3 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-sheet-ink">
+            <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[meta.status]}`} />
             {STATUS_LABEL[meta.status]}
-          </Badge>
+          </span>
         </div>
       </header>
 
-      <div className="mt-7 h-px bg-sheet-rule" />
+      <div className="mt-7 flex items-center">
+        <div className="h-[2px] w-[28mm] bg-sheet-ink" />
+        <div className="h-px flex-1 bg-sheet-rule" />
+      </div>
 
       {/* Parties & dates */}
       <section className="mt-6 grid grid-cols-[1.6fr_1fr_1fr] gap-6">
@@ -95,12 +163,12 @@ export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
       <section className="mt-8">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-y border-sheet-rule text-[8.5px] uppercase tracking-[0.14em] text-sheet-muted">
-              <th className="w-8 py-2.5 text-left font-semibold">#</th>
+            <tr className="border-t-2 border-b border-t-sheet-ink border-b-sheet-ink/15 bg-sheet-ink-soft text-[8.5px] uppercase tracking-[0.14em] text-sheet-ink">
+              <th className="w-8 py-2.5 pl-1 text-left font-semibold">#</th>
               <th className="py-2.5 text-left font-semibold">Descrição</th>
               <th className="w-14 py-2.5 text-right font-semibold">Qtd.</th>
               <th className="w-24 py-2.5 text-right font-semibold">Valor unit.</th>
-              <th className="w-26 py-2.5 text-right font-semibold">Subtotal</th>
+              <th className="w-26 py-2.5 pr-1 text-right font-semibold">Subtotal</th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +218,7 @@ export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
                 <span className="tabular text-sheet-foreground">− {formatBRL(totals.discount)}</span>
               </div>
             )}
-            <div className="mt-3 flex items-end justify-between rounded-md bg-sheet-ink px-4 py-3 text-primary-foreground">
+            <div className="mt-3 flex items-end justify-between rounded-md bg-sheet-ink px-4 py-3 text-sheet-ink-foreground">
               <span className="text-[8.5px] font-semibold uppercase tracking-[0.18em] opacity-80">
                 Total geral
               </span>
@@ -170,14 +238,7 @@ export function InvoiceSheet({ invoice }: { invoice: Invoice }) {
               Condições de pagamento
             </p>
             <p className="whitespace-pre-line leading-relaxed">{payment || "—"}</p>
-            {issuer.pixKey && (
-              <p className="mt-2.5 inline-flex items-center gap-2 rounded border border-sheet-rule px-2 py-1">
-                <span className="text-[8.5px] font-semibold uppercase tracking-wider text-sheet-muted">
-                  Pix
-                </span>
-                <span className="font-mono text-[10px]">{issuer.pixKey}</span>
-              </p>
-            )}
+            {issuer.pixKey.trim() && <PixBlock invoice={invoice} total={totals.total} />}
           </div>
           <div>
             <p className="mb-1.5 text-[8.5px] font-semibold uppercase tracking-[0.16em] text-sheet-muted">

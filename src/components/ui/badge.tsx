@@ -18,8 +18,9 @@ const badgeVariants = cva(
           "border-status-pending-foreground/20 bg-status-pending text-status-pending-foreground",
         aprovado:
           "border-status-approved-foreground/20 bg-status-approved text-status-approved-foreground",
-        concluido:
-          "border-status-done-foreground/20 bg-status-done text-status-done-foreground",
+        recusado:
+          "border-status-refused-foreground/20 bg-status-refused text-status-refused-foreground",
+        pago: "border-status-paid-foreground/20 bg-status-paid text-status-paid-foreground",
       },
     },
     defaultVariants: {

@@ -6,6 +6,7 @@ import {
   FileText,
   ImagePlus,
   ListChecks,
+  Palette,
   Percent,
   Plus,
   Trash2,
@@ -27,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 import {
+  ACCENTS,
   formatBRL,
   formatDocument,
   formatPhone,
@@ -83,7 +85,7 @@ export function InvoiceEditor({ invoice, onChange }: Props) {
   return (
     <Accordion
       type="multiple"
-      defaultValue={["issuer", "client", "meta", "items", "totals", "payment"]}
+      defaultValue={["issuer", "client", "meta", "items", "totals", "payment", "style"]}
       className="space-y-3"
     >
       <AccordionItem value="issuer" className={sectionClass}>
@@ -366,6 +368,48 @@ export function InvoiceEditor({ invoice, onChange }: Props) {
               className="bg-card"
             />
           </div>
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="style" className={sectionClass}>
+        <AccordionTrigger className={triggerClass}>
+          <SectionTitle
+            icon={Palette}
+            title="Estilo & Cores da Fatura"
+            hint={ACCENTS.find((a) => a.key === invoice.style.accent)?.label}
+          />
+        </AccordionTrigger>
+        <AccordionContent className="space-y-2 pt-1">
+          <Label className="text-xs font-medium text-muted-foreground">Cor de destaque do documento</Label>
+          <div role="radiogroup" aria-label="Cor de destaque" className="grid grid-cols-5 gap-2">
+            {ACCENTS.map((a) => {
+              const active = invoice.style.accent === a.key;
+              return (
+                <button
+                  key={a.key}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  data-accent={a.key}
+                  onClick={() => onChange((p) => ({ ...p, style: { ...p.style, accent: a.key } }))}
+                  className={cn(
+                    "group flex cursor-pointer flex-col items-center gap-1.5 rounded-md border bg-background px-1 py-2.5 transition-all hover:border-foreground/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    active && "border-foreground/40 bg-card shadow-xs",
+                  )}
+                >
+                  <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-sheet-ink ring-4 ring-sheet-ink-soft">
+                    {active && <Check className="h-4 w-4 text-sheet-ink-foreground" />}
+                  </span>
+                  <span className="text-center text-[11px] leading-tight text-muted-foreground group-aria-checked:font-medium group-aria-checked:text-foreground">
+                    {a.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Muda o selo de status, o cabeçalho da tabela, as linhas de destaque e o Total geral.
+          </p>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
