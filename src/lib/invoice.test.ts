@@ -62,7 +62,7 @@ describe("saved quotes", () => {
     const second = upsertQuote(first.list, { ...base, notes: "x" });
     expect(second.created).toBe(false);
     expect(second.list).toHaveLength(1);
-    expect(second.list[0].invoice.notes).toBe("x");
+    expect(second.list[0]?.invoice.notes).toBe("x");
   });
 
   it("next number follows the highest of the year", () => {

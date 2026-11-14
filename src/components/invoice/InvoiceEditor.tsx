@@ -376,7 +376,7 @@ export function InvoiceEditor({ invoice, onChange }: Props) {
           <SectionTitle
             icon={Palette}
             title="Estilo & Cores da Fatura"
-            hint={ACCENTS.find((a) => a.key === invoice.style.accent)?.label}
+            hint={ACCENTS.find((a) => a.key === invoice.style.accent)?.label ?? ""}
           />
         </AccordionTrigger>
         <AccordionContent className="space-y-2 pt-1">
