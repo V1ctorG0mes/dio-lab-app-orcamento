@@ -1,106 +1,138 @@
-# 📄 OrçaFácil — Gerador de Orçamentos e Propostas para Freelancers
+# 📄 OrçaFácil — MVP de Propostas Comerciais & Fechamento via WhatsApp
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Bootcamp-Santander%20%2F%20DIO-red?style=for-the-badge" alt="DIO Bootcamp" />
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-  <img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" />
-  <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" alt="shadcn/ui" />
-  <img src="https://img.shields.io/badge/TanStack_Router-FF4154?style=for-the-badge&logo=tanstack&logoColor=white" alt="TanStack Router" />
-  <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-success?style=for-the-badge" alt="Status" />
+  <img src="https://img.shields.io/badge/Lovable-FF5722?style=for-the-badge" alt="Lovable" />
+  <img src="https://img.shields.io/badge/Status-Online-success?style=for-the-badge" alt="Status" />
 </p>
 
-> Aplicação web executiva desenvolvida para profissionais autônomos, agências e freelancers criarem, gerenciarem e exportarem propostas comerciais e orçamentos em PDF com acabamento corporativo em segundos.
+> Projeto desenvolvido para o desafio prático do **Bootcamp Santander: Construa seu Primeiro App com I.A.** na plataforma **DIO (Digital Innovation One)**, aplicando Inteligência Artificial como co-founder desde a concepção e validação da tese até a publicação do MVP.
 
 ---
 
-## 📌 Sobre o Projeto
+## 🌐 Demonstração Online & Repositório
 
-O **OrçaFácil** resolve uma das principais dores no cotidiano de freelancers e prestadores de serviços: a criação rápida de propostas visuais elegantes sem depender de softwares pesados ou editores manuais.
-
-Com uma interface moderna de duas colunas, o usuário preenche os dados do prestador, cliente, serviços e condições de pagamento enquanto acompanha a renderização em tempo real de uma folha A4 proporcional. A aplicação opera **100% no cliente (client-side)** com persistência local em `localStorage`, garantindo total privacidade e velocidade instantânea.
-
-Projeto desenvolvido com apoio de Inteligência Artificial ([Lovable.dev](https://lovable.dev)) no âmbito do **Bootcamp Santander / DIO**.
+- **Aplicação no Ar (Deploy):** [https://orca-viva-preview.lovable.app/](https://orca-viva-preview.lovable.app/)
+- **Repositório no GitHub:** [https://github.com/V1ctorG0mes/orca-viva-preview](https://github.com/V1ctorG0mes/orca-viva-preview)
 
 ---
 
-## ✨ Funcionalidades Principais
+## 🎯 1. A Dor Escolhida e Por Que Vale um Negócio
 
-- ⚡ **Pré-visualização em Tempo Real (Folha A4):** Cada dígito alterado no formulário atualiza instantaneamente a folha de orçamento na proporção real A4 (210mm).
-- 🖨️ **Exportação em PDF Impecável:** Folha de estilos `@media print` calibrada para gerar um PDF limpo em folha A4 com `break-inside: avoid` nas seções e ocultação de menus/botões.
-- 📱 **QR Code Pix Dinâmico:** Geração de QR Code Pix escaneável em conformidade com o padrão EMV/BR Code do Banco Central com cálculo de checksum CRC16-CCITT e botão "Copiar Chave Pix".
-- 💬 **Compartilhamento Rápido via WhatsApp:** Gera uma mensagem pré-formatada profissional com resumo dos itens, valores e link direto para o `wa.me`.
-- 📁 **Gestão de Múltiplos Orçamentos:** Salve, consulte, edite, duplique (com numeração sequencial automática `#AAAA-NNN`) e exclua orçamentos anteriores em uma gaveta lateral (*Drawer*).
-- 🎨 **Personalização de Cores e Estilo:** Seletor com 5 paletas de destaque (Grafite, Azul Marinho, Verde Esmeralda, Vinho e Roxo) construídas sobre variáveis OKLCH.
-- 🔢 **Cálculos Automáticos e Formatação:** Cálculo em tempo real de subtotais, descontos (percentuais ou fixos em R$) e valor total em moeda brasileira (BRL).
-- 🧪 **Testes Unitários:** Suíte de testes automatizados com Vitest cobrindo cálculos matemáticos, formatação de moeda, payload Pix e manipulação de orçamentos.
+### O Problema
+Freelancers, autônomos e microempreendedores individuais (MEIs) enfrentam uma dor recorrente na etapa comercial: **perda de negócios por demora e falta de profissionalismo no envio de orçamentos**. 
+
+Muitos utilizam modelos desformatados em Word, planilhas complexas em Excel ou mandam apenas mensagens de texto soltas no WhatsApp. Esse formato:
+- Transmite amadorismo ao cliente final;
+- Não passa segurança contratual e clareza sobre o escopo;
+- Atrasa a cobrança do sinal de entrada (pagamento inicial);
+- Demora muito para ser montado, gerando atrito e perda de velocidade na negociação.
+
+### A Oportunidade
+Os softwares tradicionais de ERP e faturamento são caros (R$ 80 a R$ 200/mês), pesados e exigem cadastros longos. O autônomo precisa de uma solução **ágil, sem atrito e integrada ao canal onde a venda de fato se fecha: o WhatsApp**.
+
+---
+
+## 📊 2. Tamanho de Mercado e Business Model Canvas
+
+### Estimativa de Mercado (TAM, SAM, SOM)
+- **TAM (Total Addressable Market):** Mais de **15 milhões de MEIs e autônomos** ativos no Brasil (dados do Ministério do Desenvolvimento e IBGE).
+- **SAM (Serviceable Addressable Market):** Cerca de **3,5 milhões de prestadores de serviços criativos e digitais** (designers, programadores, consultores, videomakers, redatores) que negociam via WhatsApp.
+- **SOM (Serviceable Obtainable Market):** **150.000 freelancers** em estágio inicial e intermediário que buscam propostas rápidas e gratuitas sem depender de assinaturas caras de ERP.
+
+### Business Model Canvas (Resumo Executivo)
+| Bloco do Canvas | Descrição no Negócio |
+| :--- | :--- |
+| **Proposta de Valor** | Criação instantânea de orçamentos executivos A4 com QR Code Pix integrado e fechamento direto no WhatsApp em menos de 2 minutos. |
+| **Segmento de Clientes** | Freelancers, profissionais liberais, prestadores de serviços e MEIs. |
+| **Canais** | Aplicação Web responsiva (desktop e mobile) e fechamento pela API do WhatsApp (`wa.me`). |
+| **Relacionamento com Clientes** | Ferramenta self-service, instantânea e sem necessidade de login obrigatório para o MVP. |
+| **Fontes de Receita (Roadmap)** | Modelo *Freemium*: Gratuito para orçamentos locais ilimitados; plano Pro mensal com sincronização multi-dispositivo e relatórios fiscais. |
+| **Recursos Chave** | Engine de renderização A4 reativa em React, gerador de BR Code Pix e persistência em LocalStorage. |
+| **Atividades Chave** | Manutenção do gerador de propostas, otimização de templates de faturas e testes contínuos de usabilidade. |
+| **Parcerias Chave** | Lovable (plataforma de prototipagem ágil e IA) e ecossistema de pagamentos instantâneos (Pix / Banco Central). |
+| **Estrutura de Custos** | Custo operacional mínimo no MVP (hospedagem estática e armazenamento 100% no navegador via LocalStorage). |
+
+---
+
+## 🔬 3. A Tese do MVP e O Que Ficou Manual de Propósito
+
+### A Tese Testada
+> *"Prestadores de serviço autônomos aumentam sua taxa de conversão e velocidade de fechamento quando enviam uma proposta formal em PDF A4 com resumo formatado no WhatsApp e QR Code Pix de entrada imediata."*
+
+### O Que Ficou Manual de Propósito (Abordagem Lean)
+Seguindo os princípios ensinados no Bootcamp, a aplicação foca no essencial para validar a tese, deixando manual o que não precisa de automação no primeiro momento:
+- **Negociação e Fechamento no WhatsApp:** O freelancer aciona o envio com um clique, mas a conversa final e esclarecimento de dúvidas é 100% humana;
+- **Conferência de Comprovante:** O cliente envia o comprovante de pagamento no chat do WhatsApp, eliminando a necessidade de taxas de gateway bancário ou integração com Stripe/Mercado Pago no dia 1;
+- **Armazenamento no Navegador (LocalStorage):** Evita custos com infraestrutura de banco de dados e servidores em nuvem durante a validação da hipótese.
+
+---
+
+## 🖥️ 4. O Fluxo da Aplicação
+
+1. **Montagem da Proposta (Formulário):** Preenchimento de dados do cliente, itens, quantidades, valores unitários, condições e desconto;
+2. **Pré-visualização em Tempo Real (Folha A4):** Renderização instantânea proporcional a uma folha de 210mm com design executivo e seletor de paletas de cor;
+3. **Pagamento Instantâneo com QR Code Pix:** Geração do payload oficial EMV / BR Code com cálculo de CRC16 e botão de copiar chave Pix;
+4. **Fechamento pelo WhatsApp:** Disparo de mensagem pré-formatada comercial contendo número da proposta, resumo de itens, valor total e dados de pagamento;
+5. **Painel de Gestão ("Meus Orçamentos"):** Gaveta lateral retrátil que atua como mini-CRM com contagem na topbar, permitindo salvar, carregar, duplicar (com numeração sequencial automática `#AAAA-NNN`) e filtrar por status (*Pendente*, *Aprovado*, *Recusado*, *Pago*).
+
+---
+
+## 🤖 5. Engenharia de Prompts (ChatGPT & Lovable)
+
+### 1º Prompt (Mega Prompt de Concepção do MVP):
+```text
+Crie um aplicativo web moderno de "Gerador de Orçamentos e Faturas Comerciais para Freelancers" (OrçaFácil) 100% client-side, utilizando React, Tailwind CSS, Lucide Icons e shadcn/ui. 
+IMPORTANTE: Não utilize Supabase nem banco de dados. Toda a persistência deve ser feita em localStorage. O app deve vir inicialmente populado com dados de exemplo realistas.
+Layout dividido em duas colunas:
+- Esquerda: Formulário retrátil (Dados do emissor, cliente, itens dinâmicos com cálculo automático de subtotal e desconto, forma de pagamento).
+- Direita: Pré-visualização em tempo real simulando folha A4 com estilos @media print perfeitos para exportação em PDF.
+```
+
+### 2º Prompt (Evolução: CRM, Pix & WhatsApp):
+```text
+Mantenha a estrutura atual e adicione:
+1. Painel de Gestão ("Meus Orçamentos"): Drawer lateral com lista de orçamentos salvos, filtros por status (Pendente, Aprovado, Recusado, Pago), botão duplicar e contagem na topbar;
+2. QR Code Pix Dinâmico na fatura se houver chave Pix informada;
+3. Botão "Enviar WhatsApp" com mensagem comercial pré-formatada e link wa.me;
+4. Seletor de cores da fatura com 5 presets visuais.
+```
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **[React 19](https://react.dev/):** Biblioteca para interfaces reativas.
-- **[TypeScript](https://www.typescriptlang.org/):** Tipagem estática rigorosa para previsibilidade do código.
-- **[Tailwind CSS v4](https://tailwindcss.com/):** Nova geração do Tailwind com tema inline e variáveis OKLCH.
-- **[TanStack Router](https://tanstack.com/router):** Roteamento tipado de alta performance.
-- **[shadcn/ui](https://ui.shadcn.com/) & [Radix UI](https://www.radix-ui.com/):** Componentes acessíveis, responsivos e personalizáveis.
+- **[React 19](https://react.dev/):** Interface reativa de alta performance.
+- **[TypeScript](https://www.typescriptlang.org/):** Tipagem estática rigorosa para garantir estabilidade.
+- **[Tailwind CSS v4](https://tailwindcss.com/):** Estilização moderna utilitária com variáveis de cor OKLCH.
+- **[TanStack Router](https://tanstack.com/router):** Roteamento tipado.
+- **[shadcn/ui](https://ui.shadcn.com/) / [Radix UI](https://www.radix-ui.com/):** Componentes acessíveis de alta qualidade.
 - **[qrcode.react](https://github.com/zpao/qrcode.react):** Renderização vetorial SVG do QR Code Pix.
-- **[Lucide React](https://lucide.dev/):** Conjunto moderno de ícones de interface.
-- **[Vitest](https://vitest.dev/):** Testes unitários rápidos e integrados ao Vite.
+- **[Lucide React](https://lucide.dev/):** Ícones modernos.
+- **[Vitest](https://vitest.dev/):** Testes unitários para regras financeiras e payload Pix.
 
 ---
 
 ## 🚀 Como Executar Localmente
 
-### Pré-requisitos
-- [Node.js](https://nodejs.org/) (versão 18 ou superior)
-- Gerenciador de pacotes: `npm`, `pnpm` ou `yarn`
-
-### Passo a Passo
-
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/V1ctorG0mes/orca-viva-preview.git
-   ```
-
-2. **Acesse a pasta do projeto:**
-   ```bash
-   cd orca-viva-preview
-   ```
-
-3. **Instale as dependências:**
-   ```bash
-   npm install
-   # ou
-   pnpm install
-   ```
-
-4. **Inicie o servidor de desenvolvimento:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Acesse no navegador:**
-   Abra a URL indicada no terminal (geralmente [http://localhost:5173](http://localhost:5173)).
-
----
-
-## 🧪 Rodando os Testes Unitários
-
-Para executar os testes de cálculo de orçamento e payload do Pix:
-
 ```bash
+# 1. Clone o repositório
+git clone https://github.com/V1ctorG0mes/orca-viva-preview.git
+
+# 2. Acesse a pasta
+cd orca-viva-preview
+
+# 3. Instale as dependências
+npm install
+
+# 4. Inicie o servidor local
+npm run dev
+
+# 5. Rode a suíte de testes unitários
 npm run test
-```
-
----
-
-## 📦 Build para Produção
-
-Para gerar os arquivos otimizados prontos para deploy:
-
-```bash
-npm run build
 ```
 
 ---
@@ -108,4 +140,5 @@ npm run build
 ## 👨‍💻 Autor
 
 Desenvolvido por **Victor Gomes**  
+Bootcamp Santander: Construa seu Primeiro App com I.A. — **DIO**  
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/V1ctorG0mes)
