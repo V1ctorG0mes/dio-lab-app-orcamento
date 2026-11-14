@@ -16,7 +16,7 @@
 ## 🌐 Demonstração Online & Repositório
 
 - **Aplicação no Ar (Deploy):** [https://orca-viva-preview.lovable.app/](https://orca-viva-preview.lovable.app/)
-- **Repositório no GitHub:** [https://github.com/V1ctorG0mes/orca-viva-preview](https://github.com/V1ctorG0mes/orca-viva-preview)
+- **Repositório no GitHub:** [https://github.com/V1ctorG0mes/dio-lab-app-orcamento](https://github.com/V1ctorG0mes/dio-lab-app-orcamento)
 
 ---
 
@@ -120,10 +120,10 @@ Mantenha a estrutura atual e adicione:
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/V1ctorG0mes/orca-viva-preview.git
+git clone https://github.com/V1ctorG0mes/dio-lab-app-orcamento.git
 
 # 2. Acesse a pasta
-cd orca-viva-preview
+cd dio-lab-app-orcamento
 
 # 3. Instale as dependências
 npm install
